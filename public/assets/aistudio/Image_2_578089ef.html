@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>天质AI - 个人创作与效率搭档</title>
+<!-- Tailwind CSS v3 with Forms & Container Queries -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            dawn: {
+              50: '#f8fafc',
+              100: '#f1f5f9',
+              200: '#e2e8f0',
+              azure: '#e0f2fe',
+              lilac: '#f3e8ff',
+              gold: '#fef3c7'
+            },
+            primary: {
+              400: '#38bdf8',
+              500: '#0ea5e9',
+              600: '#0284c7',
+              700: '#0369a1',
+              klein: '#1d4ed8'
+            }
+          },
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"PingFang SC"', '"Hiragino Sans GB"', '"Microsoft YaHei"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    /* 晨曦柔光跟随层 */
+    .mouse-glow {
+      background: radial-gradient(
+        580px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+        rgba(56, 189, 248, 0.18),
+        rgba(168, 85, 247, 0.12) 35%,
+        rgba(254, 243, 199, 0.08) 60%,
+        transparent 75%
+      );
+      transition: opacity 0.4s ease;
+      will-change: background;
+    }
+
+    /* 柔性微光脉动球 */
+    @keyframes ambient-float-1 {
+      0%, 100% { transform: translate(0px, 0px) scale(1); }
+      50% { transform: translate(30px, -20px) scale(1.08); }
+    }
+    @keyframes ambient-float-2 {
+      0%, 100% { transform: translate(0px, 0px) scale(1); }
+      50% { transform: translate(-35px, 25px) scale(0.95); }
+    }
+    @keyframes gentle-shimmer {
+      0% { transform: translateX(-150%); }
+      100% { transform: translateX(250%); }
+    }
+
+    .ambient-blob-1 {
+      animation: ambient-float-1 18s ease-in-out infinite alternate;
+    }
+    .ambient-blob-2 {
+      animation: ambient-float-2 20s ease-in-out infinite alternate;
+    }
+
+    .btn-shimmer::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.3) 50%,
+        rgba(255, 255, 255, 0) 100%
+      );
+      transform: skewX(-20deg);
+      animation: gentle-shimmer 4.5s infinite ease-in-out;
+      pointer-events: none;
+    }
+
+    /* 细腻毛玻璃边框与高光 */
+    .glass-shell {
+      background: rgba(255, 255, 255, 0.72);
+      box-shadow: 
+        0 20px 50px -12px rgba(15, 23, 42, 0.08),
+        0 4px 16px -2px rgba(14, 165, 233, 0.05),
+        inset 0 1px 1px 0 rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.85);
+    }
+
+    .glass-panel-left {
+      background: linear-gradient(145deg, rgba(224, 242, 254, 0.45) 0%, rgba(243, 232, 255, 0.25) 50%, rgba(255, 255, 255, 0.5) 100%);
+      border-right: 1px solid rgba(226, 232, 240, 0.65);
+    }
+
+    .glass-panel-right {
+      background: rgba(255, 255, 255, 0.55);
+    }
+
+    .input-glow:focus {
+      border-color: rgba(56, 189, 248, 0.75);
+      box-shadow: 0 0 0 3.5px rgba(56, 189, 248, 0.16);
+    }
+  </style>
+</head>
+<body class="h-full bg-gradient-to-br from-[#f8fafc] via-[#f1f5f9] to-[#edf2f7] text-slate-800 font-sans antialiased selection:bg-sky-500 selection:text-white relative flex items-center justify-center p-3 sm:p-6 lg:p-10 overflow-x-hidden min-h-screen">
+<!-- 鼠标动态跟随晨曦微光层 -->
+<div class="mouse-glow fixed inset-0 pointer-events-none z-0" id="mouseGlowLayer"></div>
+<!-- 静态/浮动多维柔和光晕 -->
+<div class="fixed -top-24 -left-20 w-[520px] h-[520px] bg-gradient-to-tr from-sky-200/50 via-teal-100/40 to-transparent rounded-full blur-[110px] pointer-events-none ambient-blob-1 z-0"></div>
+<div class="fixed -bottom-28 -right-20 w-[580px] h-[580px] bg-gradient-to-bl from-purple-200/45 via-amber-100/40 to-sky-100/30 rounded-full blur-[130px] pointer-events-none ambient-blob-2 z-0"></div>
+<div class="fixed top-1/2 left-1/3 -translate-y-1/2 w-80 h-80 bg-rose-100/30 rounded-full blur-[90px] pointer-events-none z-0"></div>
+<!-- 主体一体化毛玻璃悬浮卡片 -->
+<div class="glass-shell backdrop-blur-xl relative z-10 w-full max-w-5xl rounded-3xl overflow-hidden shadow-2xl flex flex-col lg:flex-row transition-transform duration-500" id="interactiveCard">
+<!-- LEFT: 浅冰蓝灵感透亮展示栏 (48%) -->
+<section class="lg:w-[48%] glass-panel-left p-8 sm:p-12 lg:p-14 flex flex-col justify-between relative overflow-hidden">
+<!-- 极简高光流光点缀 -->
+<div class="absolute -right-20 -top-20 w-44 h-44 bg-white/60 rounded-full blur-2xl pointer-events-none"></div>
+<!-- 品牌徽标与名称 -->
+<div class="relative z-10 flex items-center gap-3.5">
+<div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-sky-400 via-sky-500 to-indigo-500 p-[1.5px] shadow-md shadow-sky-500/15 flex items-center justify-center">
+<div class="w-full h-full bg-white/95 rounded-[14px] flex items-center justify-center backdrop-blur-sm">
+<svg class="w-5 h-5 text-sky-600" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" viewbox="0 0 24 24">
+<path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+</svg>
+</div>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="text-xl font-bold tracking-tight text-slate-900">天质 AI</span>
+<span class="text-[11px] font-semibold text-sky-700 bg-sky-100/80 px-2 py-0.5 rounded-full border border-sky-200/60">
+              Personal
+            </span>
+</div>
+<span class="text-xs text-slate-500 tracking-wide font-normal">个人创作与效率搭档</span>
+</div>
+</div>
+<!-- 中心主标语与愿景 -->
+<div class="relative z-10 my-8 lg:my-auto">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/80 border border-sky-200/60 text-sky-700 text-xs font-medium mb-5 shadow-xs backdrop-blur-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-sky-500 animate-ping"></span>
+          探索灵感新边界
+        </div>
+<h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight leading-snug mb-4">
+          晨曦微光中，<br/>
+          开启自由心流创想。
+        </h1>
+<p class="text-sm text-slate-600 leading-relaxed mb-8 max-w-sm">
+          随时捕获稍纵即逝的思维火花，从日常待办整理到深度创意生成，与智慧相伴共进。
+        </p>
+<!-- 个人随身助手三大特性卡片 -->
+<div class="space-y-3" data-purpose="features-list">
+<!-- Item 1 -->
+<div class="p-3.5 rounded-2xl bg-white/70 hover:bg-white/90 border border-white/80 shadow-sm transition-all duration-300 hover:shadow-md flex items-start gap-3.5">
+<div class="w-8 h-8 rounded-xl bg-sky-100/80 text-sky-600 flex items-center justify-center flex-shrink-0 mt-0.5 border border-sky-200/50">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<div>
+<h3 class="text-xs font-semibold text-slate-900">「沉浸式深度思考」</h3>
+<p class="text-[12px] text-slate-500 mt-0.5 leading-snug">多轮对话伴你拆解复杂生活难题与创意规划</p>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="p-3.5 rounded-2xl bg-white/70 hover:bg-white/90 border border-white/80 shadow-sm transition-all duration-300 hover:shadow-md flex items-start gap-3.5">
+<div class="w-8 h-8 rounded-xl bg-purple-100/80 text-purple-600 flex items-center justify-center flex-shrink-0 mt-0.5 border border-purple-200/50">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<div>
+<h3 class="text-xs font-semibold text-slate-900">「全天候个人助理」</h3>
+<p class="text-[12px] text-slate-500 mt-0.5 leading-snug">智能整理待办、邮件草稿与知识书签</p>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="p-3.5 rounded-2xl bg-white/70 hover:bg-white/90 border border-white/80 shadow-sm transition-all duration-300 hover:shadow-md flex items-start gap-3.5">
+<div class="w-8 h-8 rounded-xl bg-teal-100/80 text-teal-600 flex items-center justify-center flex-shrink-0 mt-0.5 border border-teal-200/50">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<div>
+<h3 class="text-xs font-semibold text-slate-900">「专注无扰」</h3>
+<p class="text-[12px] text-slate-500 mt-0.5 leading-snug">纯粹极简，为你打造心流创作时光</p>
+</div>
+</div>
+</div>
+</div>
+<!-- 左侧底部装饰标记 -->
+<div class="relative z-10 pt-4 flex items-center justify-between text-[11px] text-slate-400">
+<span class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          个人助手引擎已就绪
+        </span>
+<span>Version 4.5 Air</span>
+</div>
+</section>
+<!-- RIGHT: 纯净通透白色玻璃登录表单 (52%) -->
+<section class="lg:w-[52%] glass-panel-right p-8 sm:p-12 lg:p-14 flex flex-col justify-between relative backdrop-blur-md">
+<!-- 顶部多语言胶囊切换 -->
+<div class="w-full flex items-center justify-end" data-purpose="language-bar">
+<nav aria-label="语言选择" class="inline-flex p-1 bg-slate-200/50 backdrop-blur-md rounded-full border border-white/70 shadow-inner">
+<button class="lang-pill px-3 py-1 rounded-full text-xs font-medium text-slate-600 hover:text-slate-900 transition-all duration-200 flex items-center gap-1.5 focus:outline-none" data-lang="en" type="button">
+            English
+          </button>
+<button class="lang-pill px-3 py-1 rounded-full text-xs font-semibold bg-white text-sky-700 shadow-sm border border-slate-200/60 transition-all duration-200 flex items-center gap-1.5 focus:outline-none" data-lang="zh-CN" type="button">
+<span class="w-1.5 h-1.5 rounded-full bg-sky-600"></span>
+            简体中文
+          </button>
+<button class="lang-pill px-3 py-1 rounded-full text-xs font-medium text-slate-600 hover:text-slate-900 transition-all duration-200 flex items-center gap-1.5 focus:outline-none" data-lang="it" type="button">
+            Italiano
+          </button>
+</nav>
+</div>
+<!-- 中心个人登录表单 -->
+<div class="w-full max-w-sm mx-auto my-auto py-6">
+<div class="mb-6">
+<h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
+            欢迎回来
+          </h2>
+<p class="text-sm text-slate-500 mt-2">
+            登录天质，继续你的心流之旅
+          </p>
+</div>
+<form class="space-y-4" data-purpose="auth-form" onsubmit="event.preventDefault();">
+<!-- 账号/邮箱 -->
+<div class="space-y-1.5">
+<label class="block text-xs font-medium text-slate-600" for="email">
+              账号 / 邮箱
+            </label>
+<div class="relative rounded-2xl">
+<div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<input class="input-glow block w-full pl-10 pr-4 py-2.5 sm:py-3 text-sm text-slate-800 bg-white/80 border border-slate-200/90 rounded-2xl placeholder-slate-400 focus:outline-none transition-all duration-200" id="email" name="email" placeholder="you@example.com" required="" type="email"/>
+</div>
+</div>
+<!-- 密码 -->
+<div class="space-y-1.5">
+<div class="flex items-center justify-between">
+<label class="block text-xs font-medium text-slate-600" for="password">
+                密码
+              </label>
+<a class="text-xs font-medium text-sky-600 hover:text-sky-700 transition-colors" href="#">
+                忘记密码？
+              </a>
+</div>
+<div class="relative rounded-2xl">
+<div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<input class="input-glow block w-full pl-10 pr-10 py-2.5 sm:py-3 text-sm text-slate-800 bg-white/80 border border-slate-200/90 rounded-2xl placeholder-slate-400 focus:outline-none transition-all duration-200" id="password" name="password" placeholder="••••••••••••" required="" type="password"/>
+<button aria-label="切换密码可见状态" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none" id="togglePassword" type="button">
+<svg class="w-4 h-4" fill="none" id="eyeIcon" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+<path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</div>
+</div>
+<!-- 记住登录 -->
+<div class="flex items-center justify-between pt-1">
+<label class="flex items-center space-x-2 cursor-pointer">
+<input class="w-4 h-4 rounded-md border-slate-300 text-sky-600 focus:ring-sky-500 focus:ring-offset-0 transition-colors" id="remember" name="remember" type="checkbox"/>
+<span class="text-xs text-slate-600 select-none">保持登录状态</span>
+</label>
+<span class="text-xs text-slate-400">安全加密通道</span>
+</div>
+<!-- 登录按钮（高级克莱因蓝/湖蓝渐变） -->
+<div class="pt-3">
+<button class="btn-shimmer relative overflow-hidden w-full py-3 px-4 rounded-2xl font-medium text-sm text-white bg-gradient-to-r from-sky-500 via-primary-600 to-blue-600 hover:from-sky-400 hover:via-primary-500 hover:to-blue-500 active:scale-[0.99] transition-all duration-200 shadow-lg shadow-sky-500/25 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2 flex items-center justify-center gap-2 group" type="submit">
+<span class="relative z-10 font-semibold tracking-wide">立即登录</span>
+<svg class="relative z-10 w-4 h-4 transform group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</div>
+</form>
+<!-- 个人注册指引 -->
+<div class="mt-8 pt-6 border-t border-slate-200/60 text-center">
+<p class="text-xs text-slate-500">
+            初次相遇？ 
+            <a class="font-semibold text-sky-600 hover:text-sky-700 hover:underline transition-colors ml-1" href="#">
+              免费注册个人账号
+            </a>
+</p>
+</div>
+</div>
+<!-- 右下极简点缀，无版权与冗余 -->
+<div class="w-full flex items-center justify-center text-[11px] text-slate-400">
+<span>心流涌现 · 随想即所得</span>
+</div>
+</section>
+</div>
+<!-- 原生轻量JS交互 -->
+<script>
+    // 1. 鼠标动态跟随光斑 (Vanilla JS + CSS custom properties)
+    const glowLayer = document.getElementById('mouseGlowLayer');
+    const card = document.getElementById('interactiveCard');
+
+    window.addEventListener('mousemove', (e) => {
+      const x = e.clientX;
+      const y = e.clientY;
+      
+      // 更新全局柔和跟随光晕位置
+      glowLayer.style.setProperty('--mouse-x', `${x}px`);
+      glowLayer.style.setProperty('--mouse-y', `${y}px`);
+
+      // 细腻的卡片微视差互动
+      if (window.innerWidth >= 1024 && card) {
+        const centerX = window.innerWidth / 2;
+        const centerY = window.innerHeight / 2;
+        const deltaX = (x - centerX) / 80;
+        const deltaY = (y - centerY) / 80;
+        card.style.transform = `perspective(1000px) rotateY(${deltaX * 0.4}deg) rotateX(${-deltaY * 0.4}deg) translateY(0px)`;
+      }
+    });
+
+    // 鼠标离开窗口恢复中性位置
+    window.addEventListener('mouseleave', () => {
+      if (card) {
+        card.style.transform = 'perspective(1000px) rotateY(0deg) rotateX(0deg)';
+      }
+    });
+
+    // 2. 密码可见性切换
+    const togglePasswordBtn = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+
+    if (togglePasswordBtn && passwordInput) {
+      togglePasswordBtn.addEventListener('click', () => {
+        const isPassword = passwordInput.getAttribute('type') === 'password';
+        passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
+        togglePasswordBtn.classList.toggle('text-sky-600', isPassword);
+      });
+    }
+
+    // 3. 语言切换交互胶囊
+    const langPills = document.querySelectorAll('.lang-pill');
+    langPills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        langPills.forEach(p => {
+          p.classList.remove('bg-white', 'text-sky-700', 'shadow-sm', 'border-slate-200/60', 'font-semibold');
+          p.classList.add('text-slate-600', 'font-medium');
+          const dot = p.querySelector('span');
+          if (dot) dot.remove();
+        });
+        pill.classList.add('bg-white', 'text-sky-700', 'shadow-sm', 'border-slate-200/60', 'font-semibold');
+        pill.classList.remove('text-slate-600', 'font-medium');
+        
+        const dot = document.createElement('span');
+        dot.className = 'w-1.5 h-1.5 rounded-full bg-sky-600';
+        pill.prepend(dot);
+      });
+    });
+  </script>
+</body></html>

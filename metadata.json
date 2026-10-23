@@ -1,0 +1,6 @@
+{
+  "name": "天质 AI · 个人创作与效率搭档",
+  "description": "晨曦微光中，开启自由心流创想。个人随身AI深度思考、全天候助理与专注心流创作空间。",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
